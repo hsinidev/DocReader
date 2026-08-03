@@ -1,0 +1,28 @@
+﻿App Name: DocReader
+Version: 1.0.0
+Platform: Android (Kotlin + Jetpack Compose)
+Category: Utilities / Document Reader
+Target Market: Global
+Price Model: Free + $3.99/month Pro
+
+Description:
+DocReader opens DOCX, XLSX, PPTX, DOC, XLS, RTF, and TXT files beautifully on Android without needing Microsoft Office. Read, annotate, and share documents with ease.
+
+Key Features:
+- Open: DOCX, DOC, XLSX, XLS, PPTX, PPT, RTF, TXT, ODT
+- Faithful document rendering with fonts, tables, and images preserved
+- Text search within document
+- Bookmarks and jump-to-page navigation
+- Night mode for comfortable reading
+- Highlight and annotate text
+- Copy text to clipboard
+- Track changes view for DOCX
+- Excel spreadsheet view with column/row resize
+- PowerPoint slideshow mode with swipe navigation
+- Print via system print dialog
+- Recent files with thumbnail preview
+- Cloud file opening: Google Drive, OneDrive, Dropbox
+
+Target Audience: Business professionals, students, anyone receiving Office documents on phone
+Competitors: Microsoft Office (bloated), Google Docs app, OfficeSuite, WPS Office
+Unique Value Proposition: Lighter than Microsoft and WPS — focused purely on reading not editing

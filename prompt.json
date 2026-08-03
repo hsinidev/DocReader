@@ -1,0 +1,130 @@
+﻿{
+  "prompt_metadata": {
+    "app_name": "DocReader - Professional Multi-Format Office Suite & Annotator",
+    "tagline": "Open, annotate, and navigate Word, Excel, and PowerPoint with desktop-grade fidelity.",
+    "target_platform": "Android (Kotlin + Jetpack Compose)",
+    "language": "Kotlin",
+    "ui_framework": "Jetpack Compose (Material Design 3)",
+    "architecture_pattern": "MVVM + Clean Architecture + MVI for Document States",
+    "build_system": "Gradle Kotlin DSL (Version Catalogs)",
+    "min_sdk": 26,
+    "target_sdk": 34,
+    "category": "Productivity / Office Utilities / Document Management",
+    "monetization": "Hybrid: Free (View up to 10 documents/mo, basic search, standard rendering + AdMob Ads) | Premium Pro ($3.99/mo subscription or $19.99 lifetime purchase to unlock unlimited documents, vector-ink annotations, PDF export/signatures, cloud storage integration, and an ad-free workstation)"
+  },
+  "agent_instructions": {
+    "role": "You are a Principal Mobile Software Architect and Document Systems Engineer. Your goal is to design 'DocReader', a highly optimized, low-latency document viewer that parses complex Microsoft Office formats (.docx, .xlsx, .pptx), legacy types, and RTF, converting raw binary hierarchies into high-performance, scrollable Compose interfaces with precise rendering fidelity.",
+    "design_philosophy": "Zero-latency executive workstation. Document loading and text layout calculations must run entirely on background worker threads, presenting a highly responsive, stutter-free viewport. The UI must feel administrative, distraction-free, and clean, featuring dedicated paper-view, sepia, and dark-reading modes.",
+    "code_standards": [
+      "Strict separation of concerns using Clean Architecture: Presentation (Compose UI, ViewModels, MVI Intents), Domain (Document Parsers, Annotation UseCases, Document Security), Data (Apache POI wrappers, Room DB, SAF content providers).",
+      "Dynamic MVI state machines using Kotlin StateFlows to transition smoothly between document loading, parsing, page rendering, editing annotations, and exporting.",
+      "Extreme memory optimization: Implement streaming SAX parsers (such as Apache POI's XSSFReader) for large spreadsheets to prevent JVM OutOfMemory (OOM) errors on low-end devices.",
+      "Absolute local persistence of annotations and reading history stored in Room, securely linked using SHA-256 file checksums so annotations survive file-relocations."
+    ]
+  },
+  "product_specification": {
+    "core_mechanics": {
+      "multi_format_document_engine": {
+        "description": "High-fidelity, local-first parser converting proprietary office structures into readable layout models.",
+        "word_processing_parser": "Parse XML-based DOCX elements (paragraphs, tables, inline run stylings, hyperlinked text) via Apache POI. Construct a linear paginated flow mapping custom Compose Texts and interactive rich text styles.",
+        "spreadsheet_grid_builder": "Process multi-sheet workbook files (.xlsx, .xls). Map row-and-column arrays dynamically onto a custom 2D scrollable Compose Canvas. Support cell style formats, active column-resizing, and dynamic cell-freeze parameters.",
+        "slideshow_paginator": "Extract PowerPoint (.pptx) layouts, text frames, shapes, and images. Present them in an interactive slide-carousel with precise scale-to-fit parameters."
+      },
+      "vector_annotation_subsystem": {
+        "description": "An overlay layer allowing users to write, highlight, and attach comments directly on active documents.",
+        "canvas_freehand_ink": "Implement a touch-driven vector drawing layer on Compose Canvas using Beziér path smoothing. Save drawing coordinates as normalized float-point maps.",
+        "highlight_and_comment": "Support selection coordinates to apply highlighted background states. Users can anchor text comments onto specific coordinate frames of the parsed document.",
+        "integrity_preservation": "Calculate file SHA-256 hashes upon ingestion. Store annotation vector paths, selected text bounds, and comment text alongside the hash in Room, guaranteeing matching alignments upon subsequent opens."
+      },
+      "saf_workspace_manager": {
+        "description": "A fluid document explorer and workspace organizer integrating native Scoped Storage protocols.",
+        "saf_integration": "Seamless integration with Android's Storage Access Framework (SAF). Allow users to fetch files from secondary SD cards or cloud providers via standard document-provider URI authorities.",
+        "recents_and_bookmarks": "An organized file shelf displaying recent files with file size, format badges, and exact page progress. Enable users to bookmark specific chapters or sheets."
+      },
+      "admob_monetization_layer": {
+        "banner_ads": "Collapsible smart banners integrated at the base of the Document Explorer and Settings screens (permanently hidden in Pro-tier).",
+        "interstitial_ads": "Gracefully loaded immediately after closing a document or saving an annotation set (capped with a strict 15-minute cooldown timer to protect the enterprise reading flow).",
+        "rewarded_ads": "Watch an ad to unlock high-fidelity rendering of documents over 10MB or to export a paginated document to PDF for free."
+      },
+      "consent_platform": "Integrate the Google User Messaging Platform (UMP) SDK to capture compliant GDPR and international privacy consent before initializing any AdMob assets."
+    }
+  },
+  "technical_specification": {
+    "key_permissions": [
+      "android.permission.READ_MEDIA_VISUAL_USER_SELECTED (Fallback visual pickers)",
+      "android.permission.INTERNET (Required for Google Play Billing, cloud parsing, and AdMob services)",
+      "android.permission.POST_NOTIFICATIONS (For WorkManager document-to-PDF conversion status notifications)",
+      "android.permission.FOREGROUND_SERVICE_DATA_SYNC (Required for background document-to-PDF rendering pipelines on Android 14+)"
+    ],
+    "module_architecture": {
+      "app": "Application initialization, Hilt module bindings, entry-point route setups.",
+      "core_ui": "Professional executive tokens (Executive Blue, Steel Slate, Light Paper background), custom double-ended zoom sliders, custom paginated canvas viewers, and spring transitions.",
+      "feature_explorer": "Storage Access Framework hooks, recent files shelf, category filters, metadata indexers.",
+      "feature_reader": "Apache POI integrations, thread-isolated text paginators, custom Excel sheet tables, and PPT slide swipe carousels.",
+      "feature_annotations": "Vector ink Canvas systems, touch gesture tracking, annotation overlay managers, and room backup controllers.",
+      "feature_pro": "Google Play Billing client binders, premium entitlement verification hooks, Pro Paywall screens."
+    },
+    "state_management_details": {
+      "document_state_machine": {
+        "state_model": "data class DocReaderState(val activeDocumentUri: Uri?, val isLoading: Boolean, val documentHash: String?, val currentPage: Int, val totalPages: Int, val activeAnnotations: List, val selectedUiTheme: ReaderTheme, val isPro: Boolean)",
+        "reader_theme": "enum class ReaderTheme { DAY_PAPER, SEPIA_WARM, NIGHT_DARK, SYSTEM_DEFAULT }"
+      }
+    },
+    "core_dependencies": {
+      "jetpack_compose": "androidx.compose.ui:ui:1.6.x (with Material 3 components and constraintlayout-compose)",
+      "office_parser": "org.apache.poi:poi-ooxml:5.2.x (Optimized for standard Java/Android boundaries)",
+      "database_orm": "androidx.room:room-runtime:2.6.x & room-compiler (using room-ktx for tracking history and annotations)",
+      "dependency_injection": "com.google.dagger:hilt-android:2.51 & hilt-navigation-compose",
+      "asynchronous_runtime": "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.x",
+      "background_runtime": "androidx.work:work-runtime-ktx:2.9.x",
+      "billing": "com.android.billingclient:billing-ktx:6.2.0 (Google Play Billing Engine)",
+      "monetization": "com.google.android.gms:play-services-ads:23.x.x (AdMob Mobile Ads SDK)",
+      "consent_sdk": "com.google.android.ump:user-messaging-platform:2.2.x (User Consent Collection)"
+    },
+    "ui_ux_design": {
+      "theme_color_palette": {
+        "primary": "#1E3A8A (Executive Royal Navy - represents professional workspace security)",
+        "secondary": "#0D9488 (Comforting Forest Teal - used for active annotations and highlights)",
+        "background": "#F1F5F9 (Soft Slate Gray - optimized for paper contrast)",
+        "surface": "#FFFFFF (Pure White)",
+        "on_background": "#0F172A (Deep Charcoal)",
+        "accent": "#E11D48 (Vibrant Ruby - used exclusively for errors and alert banners)"
+      },
+      "design_notes": "Sleek sepia and night alternatives are dynamic. Touch-targets must maintain a 48dp minimum for all annotations, margins must represent real page layouts, and scroll feedback must feature micro-dampening animations."
+    }
+  },
+  "execution_roadmap": [
+    {
+      "phase_1": "Project Scaffold & Scoped Storage Binder",
+      "description": "Establish multi-module structure utilizing Clean Architecture guidelines. Configure Hilt containers, set up Kotlin Version Catalogs, prepare Type-Safe Compose Navigation routes, and initialize Room databases for file-access registries."
+    },
+    {
+      "phase_2": "SAF Explorer & File Metadata Engine",
+      "description": "Integrate SAF DocumentProvider interfaces. Implement metadata readers compiling document formats, byte size boundaries, and file dates. Build dynamic explorer feeds featuring categorized tabs (All, Word, Excel, Slide, Text)."
+    },
+    {
+      "phase_3": "The Apache POI Document Parsing Engine",
+      "description": "Configure Apache POI memory-optimized libraries on Android background threads. Build parsers rendering word paragraphs, extracting Excel cells dynamically into 2D tables, and mapping slide runs into individual carousel containers."
+    },
+    {
+      "phase_4": "High-Fidelity Document Rendering Viewport",
+      "description": "Build high-performance paginated structures inside Jetpack Compose UI. Manage text alignments, column sizing rules, zoom-and-pan gestures, and scrolling thresholds."
+    },
+    {
+      "phase_5": "Vector Annotations & Persistent Overlay Mechanics",
+      "description": "Build interactive Canvas structures allowing vector path drawing and highlighters. Map annotations onto document-level coordinate bounds. Integrate file SHA-256 check controllers to persist markup models securely in Room."
+    },
+    {
+      "phase_6": "AdMob Integration & GDPR Consent Loop",
+      "description": "Initialize the Google User Messaging Platform (UMP) SDK. Construct modular Compose container overlays to request location/privacy consent loops before initializing the AdMob SDK. Inject responsive Anchor adaptive Banners and custom-capped Interstitial triggers."
+    },
+    {
+      "phase_7": "Google Play Billing 6.x Premium Paywall",
+      "description": "Build the Google Play Billing subscription repository. Construct a modern, visually striking Pro Paywall featuring dynamic cards, comparison grids, and spring transition animations that bypasses AdMob overlays upon transaction validation."
+    },
+    {
+      "phase_8": "WorkManager PDF Export & Release Packaging",
+      "description": "Measure and optimize layout calculations for complex structures. Schedule background WorkManager tasks converting parsed models into structured PDF print-jobs using PDFDocument components. Build and generate the final signed release artifact."
+    }
+  ]
+}
